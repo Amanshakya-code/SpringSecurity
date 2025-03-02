@@ -1,16 +1,15 @@
 package com.aman.SpringSecurity.SpringSecurity.Controllers;
 
-import com.aman.SpringSecurity.SpringSecurity.DTO.LoginDTO;
-import com.aman.SpringSecurity.SpringSecurity.DTO.LoginResponseDTO;
-import com.aman.SpringSecurity.SpringSecurity.DTO.SignUpDTO;
-import com.aman.SpringSecurity.SpringSecurity.DTO.UserDTO;
+import com.aman.SpringSecurity.SpringSecurity.DTO.*;
 import com.aman.SpringSecurity.SpringSecurity.Service.AuthService;
 import com.aman.SpringSecurity.SpringSecurity.Service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +48,21 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(loginResponseDTO);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody LogOutDTO logOutDTO, HttpServletRequest request,HttpServletResponse response){
+        String logoutMessage =  authService.logout(logOutDTO);
+
+        // Remove refresh token cookie
+        Cookie cookie = new Cookie("refreshToken", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure("production".equals(deployEnv)); // Keep secure in production
+        cookie.setPath("/"); // Ensure it applies to the correct path
+        cookie.setMaxAge(0); // Expire the cookie immediately
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(logoutMessage);
     }
 
     @PostMapping("/refresh")

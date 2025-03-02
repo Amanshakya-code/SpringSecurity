@@ -32,7 +32,7 @@ public class WebSecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     private static final String[] publicRoutes = {
-            "/error", "/auth/**", "/home.html"
+            "/error", "/auth/**", "/home.html","/subscription/**"
     };
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws  Exception{

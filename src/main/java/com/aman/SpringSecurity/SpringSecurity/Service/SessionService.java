@@ -16,11 +16,13 @@ import java.util.List;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
-    private final int SESSION_LIMIT = 2;
+    private final SubscriptionService subscriptionService;
+    //private final int SESSION_LIMIT = 2;
 
     public void generateNewSession(Users user, String refreshToken) {
         List<SessionEntity> userSessions = sessionRepository.findByUser(user);
-        if (userSessions.size() == SESSION_LIMIT) {
+        Integer activeSessionSupported = subscriptionService.getActiveSessionForUser(user);
+        if (userSessions.size() == activeSessionSupported) {
             userSessions.sort(Comparator.comparing(SessionEntity::getLastUsedAt));
 
             SessionEntity leastRecentlyUsedSession = userSessions.getFirst();
@@ -39,5 +41,9 @@ public class SessionService {
                 .orElseThrow(() -> new SessionAuthenticationException("Session not found for refreshToken: "+refreshToken));
         session.setLastUsedAt(LocalDateTime.now());
         sessionRepository.save(session);
+    }
+
+    public void deleteSessions(Users user){
+        sessionRepository.deleteByUser(user);
     }
 }

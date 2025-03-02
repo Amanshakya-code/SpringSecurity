@@ -26,13 +26,13 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    //@PreAuthorize("hasRole('USER') AND hasAuthority('POST_VIEW')")
-    @PreAuthorize("@postSecurity.isOwnerOfPost(#postId)")
+    @PreAuthorize("@postSecurity.isOwnerOfPost(#postId) AND @postSecurity.hasBasicSubscription()")
     public PostDTO getPostById(@PathVariable Long postId){
         return postService.getPostById(postId);
     }
 
     @PostMapping
+    @PreAuthorize("@postSecurity.hasPremiumSubscription()")
     public PostDTO createPost(@RequestBody PostDTO inputPost){
         return postService.createNewPost(inputPost);
     }

@@ -1,9 +1,7 @@
 package com.aman.SpringSecurity.SpringSecurity.Service;
 
 
-import com.aman.SpringSecurity.SpringSecurity.DTO.LoginDTO;
-import com.aman.SpringSecurity.SpringSecurity.DTO.LoginResponseDTO;
-import com.aman.SpringSecurity.SpringSecurity.DTO.UserDTO;
+import com.aman.SpringSecurity.SpringSecurity.DTO.*;
 import com.aman.SpringSecurity.SpringSecurity.Entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -43,5 +41,11 @@ public class AuthService {
 
         String accessToken = jwtService.generateAccessToken(user);
         return new LoginResponseDTO(user.getId(), accessToken, refreshToken);
+    }
+
+    public String logout(LogOutDTO logOutDTO) {
+        Users user = modelMapper.map(userService.getUserByEmail(logOutDTO.getEmail()),Users.class);
+        sessionService.deleteSessions(user);
+        return "Logout SuccessFully !!";
     }
 }

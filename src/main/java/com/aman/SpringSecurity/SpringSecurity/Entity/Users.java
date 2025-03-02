@@ -5,6 +5,7 @@ import com.aman.SpringSecurity.SpringSecurity.Entity.Enums.Role;
 import com.aman.SpringSecurity.SpringSecurity.Utils.PermissionMapping;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +39,8 @@ public class Users implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private SubscriptionEntity subscription;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
