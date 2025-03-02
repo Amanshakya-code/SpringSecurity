@@ -19,4 +19,7 @@ public class PostEntity {
     private Long Id;
     private String title;
     private String description;
+
+    @ManyToOne
+    private Users author;
 }

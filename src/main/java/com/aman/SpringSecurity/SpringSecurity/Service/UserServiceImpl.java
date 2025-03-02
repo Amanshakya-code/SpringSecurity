@@ -44,7 +44,7 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     @Override
     public UserDTO getUserByEmail(String email){
         Users user =  userRepository.findByEmail(email).orElse(null);
-        if(user == null) throw new ResourcesNotFoundException("User does not exist with this email id");
+        if(user == null) return null;
         return modelMapper.map(user,UserDTO.class);
     }
 

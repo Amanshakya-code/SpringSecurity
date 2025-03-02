@@ -2,10 +2,12 @@ package com.aman.SpringSecurity.SpringSecurity.Service;
 
 import com.aman.SpringSecurity.SpringSecurity.DTO.PostDTO;
 import com.aman.SpringSecurity.SpringSecurity.Entity.PostEntity;
+import com.aman.SpringSecurity.SpringSecurity.Entity.Users;
 import com.aman.SpringSecurity.SpringSecurity.Exceptions.ResourcesNotFoundException;
 import com.aman.SpringSecurity.SpringSecurity.Repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -34,7 +36,9 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostDTO createNewPost(PostDTO inputPost) {
+        Users user = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PostEntity postEntity = modelMapper.map(inputPost, PostEntity.class);
+        postEntity.setAuthor(user);
         return modelMapper.map(postRepository.save(postEntity), PostDTO.class);
     }
 
